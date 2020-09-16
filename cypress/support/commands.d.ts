@@ -5,7 +5,7 @@ declare namespace Cypress {
       options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
     ) => Chainable<Subject>;
 
-    readonly login: () => Chainable<Subject>;
+    readonly login: (user?: any) => Chainable<Subject>;
 
     readonly routeAs: (
       method: string,
