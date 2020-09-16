@@ -1,6 +1,8 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "sourceMap": false,
+    "outDir": "../dist/e2e",
     "types": ["cypress", "node"]
   },
   "include": ["../node_modules/cypress", "**/*.ts"],

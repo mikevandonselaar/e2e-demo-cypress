@@ -1,5 +1,4 @@
-const cypressTypeScriptPreprocessor = require("./cy-ts-preprocessor");
-
-module.exports = on => {
-  on("file:preprocessor", cypressTypeScriptPreprocessor);
-};
+// ***********************************************************
+// This file can be used to load plugins
+// You can read more here: https://on.cypress.io/plugins-guide
+// ***********************************************************
