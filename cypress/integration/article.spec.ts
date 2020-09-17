@@ -29,7 +29,7 @@ before(() => {
   });
 });
 
-describe('Articles - Create articles', () => {
+describe('Article tests', () => {
   beforeEach(() => {
     cy.server();
     toggleRoutes(userName, mockingEnabled, mockData);
