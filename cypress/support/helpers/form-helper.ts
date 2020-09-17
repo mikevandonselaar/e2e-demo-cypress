@@ -3,10 +3,10 @@ import { FormFieldType } from './form-field-type.model';
 import { FormField } from './form-field.model';
 import { Visibility } from './visibility.model';
 
-const page = new SharedFormComponents();
+const form = new SharedFormComponents();
 
 export function typeInFormField(key: string, value: any, visibility: Visibility = Visibility.Visible): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .then(($element) => {
@@ -18,12 +18,12 @@ export function typeInFormField(key: string, value: any, visibility: Visibility 
 }
 
 export function typeInFilterSelectField(key: string, value: any, visibility: Visibility = Visibility.Visible): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .within(($element) => {
       if (($element && value && visibility === Visibility.Visible) || visibility === Visibility.Exists) {
-        page.getFilterSelect().then(() => {
+        form.getFilterSelect().then(() => {
           typeInInputField(value);
         });
       }
@@ -36,12 +36,12 @@ export function typeInAsyncFilterSelectField(
   visibility: Visibility = Visibility.Visible,
   requestToAwait: string = ''
 ): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .within(($element) => {
       if (($element && value && visibility === Visibility.Visible) || visibility === Visibility.Exists) {
-        page.getFilterSelect();
+        form.getFilterSelect();
         cy.get('input').within(($inputElement) => {
           cy.wrap($inputElement).clear().click().type(`${value.toString()}`);
           cy.wait(requestToAwait);
@@ -52,12 +52,12 @@ export function typeInAsyncFilterSelectField(
 }
 
 export function clearFilterSelectField(key: string): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should('exist')
     .within(($element) => {
       if ($element) {
-        page.getFilterSelect().within(() => cy.get('.ng-clear-wrapper').click());
+        form.getFilterSelect().within(() => cy.get('.ng-clear-wrapper').click());
       }
     });
 }
@@ -67,13 +67,13 @@ export function typeInLastCascadedListField(
   value: string,
   visibility: Visibility = Visibility.Visible
 ): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .within(($element) => {
       if (($element && value && visibility === Visibility.Visible) || visibility === Visibility.Exists) {
-        page.getCascadedList().within(() => {
-          page
+        form.getCascadedList().within(() => {
+          form
             .getFilterSelect()
             .last()
             .within(() => {
@@ -82,6 +82,18 @@ export function typeInLastCascadedListField(
         });
       }
     });
+}
+
+export function typeInTagInputField(key: string, tags: string[], visibility: Visibility = Visibility.Visible): void {
+  tags.forEach((tag) => {
+    form
+      .getFormFieldBySelector(key)
+      .should(visibility)
+      .type(`${String(tag)}{enter}`)
+      .then(() => {
+        cy.getElement('tag-name').should('contain.text', tag);
+      });
+  });
 }
 
 function typeInInputField(value: string): void {
@@ -96,16 +108,16 @@ export function selectOptionFromDropdownList(
   value: any,
   visibility: Visibility = Visibility.Visible
 ): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .click()
     .then(($element) => {
       if ($element && (visibility === Visibility.Visible || visibility === Visibility.Exists)) {
         if (typeof value === 'number') {
-          page.getOptionBySelector(key).eq(value).should('exist').click();
+          form.getOptionBySelector(key).eq(value).should('exist').click();
         } else {
-          page.getOptionBySelector(key).first().should('exist').click();
+          form.getOptionBySelector(key).first().should('exist').click();
         }
       }
     });
@@ -116,37 +128,37 @@ export function selectMultipleOptionsFromDropdownList(
   values: string[],
   visibility: Visibility = Visibility.Visible
 ): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .click()
     .then(($element) => {
       if (($element && visibility === Visibility.Visible) || visibility === Visibility.Exists) {
         for (const checkboxValue of values) {
-          page.getCheckboxLabel().contains(checkboxValue).first().scrollIntoView().click();
+          form.getCheckboxLabel().contains(checkboxValue).first().scrollIntoView().click();
         }
       }
     });
 }
 
 export function selectCheckboxValue(key: string, visibility: Visibility = Visibility.Visible): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .within(($element) => {
       if (($element && visibility === Visibility.Visible) || visibility === Visibility.Exists) {
-        page.getCheckboxLabel().first().should(visibility).click();
+        form.getCheckboxLabel().first().should(visibility).click();
       }
     });
 }
 
 export function selectRadioOption(key: string, option: string, visibility: Visibility = Visibility.Visible): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .within(($element) => {
       if (($element && visibility === Visibility.Visible) || visibility === Visibility.Exists) {
-        page.getFormFieldBySelector(`${option}-radio`).should(visibility).click();
+        form.getFormFieldBySelector(`${option}-radio`).should(visibility).click();
       }
     });
 }
@@ -157,12 +169,12 @@ export function selectTodayFromDateTimePicker(
   selectWithTime: boolean,
   visibility: Visibility = Visibility.Visible
 ): void {
-  page
+  form
     .getFormFieldBySelector(key)
     .should(visibility)
     .within(($element) => {
       if (($element && visibility === Visibility.Visible) || visibility === Visibility.Exists) {
-        page.getDatePickerToggle().should(visibility).click();
+        form.getDatePickerToggle().should(visibility).click();
       }
     })
     .then(() => {
@@ -170,17 +182,17 @@ export function selectTodayFromDateTimePicker(
     });
 
   if (selectWithTime) {
-    page
+    form
       .getFormFieldBySelector(key)
       .should(visibility)
       .within(($element) => {
         if (($element && visibility === Visibility.Visible) || visibility === Visibility.Exists) {
-          page
+          form
             .getFormFieldBySelector('hours')
             .should(visibility)
             .clear()
             .type(assertHoursMinutes(value) ? value.hours.toString() : '12');
-          page
+          form
             .getFormFieldBySelector('minutes')
             .should(visibility)
             .clear()
@@ -230,6 +242,9 @@ export function fillForm(fields: FormField[]): void {
       case FormFieldType.CascadedList:
         typeInLastCascadedListField(field.key, field.value, editable);
         break;
+      case FormFieldType.TextArea:
+        cy.invokeValue(`${field.key}-input`, field.value);
+        break;
       default:
         typeInFormField(field.key, field.value, editable);
         break;
@@ -239,29 +254,29 @@ export function fillForm(fields: FormField[]): void {
 
 export function validateForm(fields: FormField[]): void {
   fields.forEach((field) => {
-    page.getFormFieldLabel(field.key).should('exist');
+    form.getFormFieldLabel(field.key).should('exist');
 
     if (field.validateValue && field.value) {
       switch (field.type) {
         case FormFieldType.Text:
         case FormFieldType.Number:
         case FormFieldType.TextArea:
-          page.getFormFieldBySelector(field.key).should('have.value', field.value);
+          form.getFormFieldBySelector(field.key).should('have.value', field.value);
           break;
         case FormFieldType.CascadedList:
-          page
+          form
             .getFormFieldBySelector(field.key)
             .should('exist')
             .within(() => {
               field.value.forEach((value: string) => {
-                page.getCascadedList().should('contain.text', value);
+                form.getCascadedList().should('contain.text', value);
               });
             });
           break;
         case FormFieldType.DatePicker:
         case FormFieldType.DateTimePicker:
         default:
-          page.getFormFieldValue(field.key).should('contain', field.value);
+          form.getFormFieldValue(field.key).should('contain', field.value);
           break;
       }
     }

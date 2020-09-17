@@ -11,4 +11,5 @@ export enum FormFieldType {
   CascadedList,
   DatePicker,
   DateTimePicker,
+  TagList,
 }

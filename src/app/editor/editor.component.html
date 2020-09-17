@@ -10,6 +10,8 @@
               <input
                 class="form-control form-control-lg"
                 formControlName="title"
+                id="title"
+                name="name"
                 type="text"
                 placeholder="Article Title"
                 data-cy="title-input"
@@ -55,7 +57,12 @@
               </div>
             </fieldset>
 
-            <button class="btn btn-lg pull-xs-right btn-primary" type="button" (click)="submitForm()">
+            <button
+              class="btn btn-lg pull-xs-right btn-primary"
+              type="button"
+              (click)="submitForm()"
+              data-cy="submit-button"
+            >
               Publish Article
             </button>
           </fieldset>

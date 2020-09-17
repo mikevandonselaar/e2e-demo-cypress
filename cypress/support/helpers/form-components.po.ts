@@ -1,4 +1,5 @@
 export class SharedFormComponents {
+  getRoute = () => cy.location('pathname');
   getForm = (selector: string) => cy.getElement(`${selector}-form`);
 
   getFormFieldLabel = (selector: string) => cy.getElement(`${selector}-label`);
