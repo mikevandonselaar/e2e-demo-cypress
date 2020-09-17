@@ -1,7 +1,6 @@
 import { ArticleBuilder } from '../support/builders/article-builder';
 import { createArticleRequest, getArticleRequest, getArticlesRequest, toggleRoutes } from '../support/routes';
-import { MockData } from '../support/mock-data';
-import { Article } from '../../src/app/article/article.model';
+import { ArticlePagingResult } from '../support/helpers/article-paging-result.model';
 import { FormField, FormFieldType, FormHelper } from '../support/helpers';
 import { SharedFormComponents } from '../support/helpers/form-components.po';
 import { fixedValues } from '../support/constants';
@@ -9,8 +8,7 @@ import { fixedValues } from '../support/constants';
 const userName = 'henkvandebroek';
 const mockingEnabled = false;
 
-let mockData: MockData;
-let builtArticles: Article[] = [];
+let articlePagingResult: ArticlePagingResult = { articles: [], articlesCount: 0 };
 
 const form = new SharedFormComponents();
 const formFields: FormField[] = [
@@ -32,10 +30,10 @@ before(() => {
 describe('Article tests', () => {
   beforeEach(() => {
     cy.server();
-    toggleRoutes(userName, mockingEnabled, mockData);
+    toggleRoutes(userName, mockingEnabled, articlePagingResult);
   });
 
-  it('should show an overview of favorited articles of profile', () => {
+  it.only('should show an overview of favorited articles of profile', () => {
     cy.visit(`/profile/${userName}/favorites`);
 
     cy.wait(getArticlesRequest);
@@ -96,6 +94,12 @@ after(() => {
 });
 
 async function configureTestData(): Promise<void> {
-  builtArticles.push((await new ArticleBuilder().withTitle('Cypress tutorial').asFavorite().build()).article);
-  builtArticles.push((await new ArticleBuilder().withTitle('Cypress getting started').asFavorite().build()).article);
+  articlePagingResult.articles.push(
+    (await new ArticleBuilder(mockingEnabled).withTitle('Cypress tutorial').asFavorite().build()).article
+  );
+  articlePagingResult.articles.push(
+    (await new ArticleBuilder(mockingEnabled).withTitle('Cypress getting started').asFavorite().build()).article
+  );
+
+  articlePagingResult.articlesCount = 2;
 }
