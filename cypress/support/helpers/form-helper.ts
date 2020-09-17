@@ -242,6 +242,9 @@ export function fillForm(fields: FormField[]): void {
       case FormFieldType.CascadedList:
         typeInLastCascadedListField(field.key, field.value, editable);
         break;
+      case FormFieldType.TagList:
+        typeInTagInputField(field.key, field.value);
+        break;
       case FormFieldType.TextArea:
         cy.invokeValue(`${field.key}-input`, field.value);
         break;
